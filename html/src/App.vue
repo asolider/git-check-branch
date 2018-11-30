@@ -1,11 +1,9 @@
 <template>
   <div id="app">
-    <el-row>
-      <el-col :span="16" :offset="4">
-        <mheader></mheader>
-        <router-view/>
-      </el-col>
-    </el-row>
+    <div id="content">
+      <mheader></mheader>
+      <router-view/>
+    </div>
   </div>
 </template>
 
@@ -26,5 +24,9 @@ export default {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   color: #2c3e50;
+}
+#content {
+  width: 60%;
+  margin: 0 auto;
 }
 </style>

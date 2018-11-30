@@ -1,21 +1,33 @@
 <template>
 <div>
-  <addComputer></addComputer>
+  <addComputer @successAdd="successAdd"></addComputer>
 
   <el-table
     :data="tableData"
     stripe>
     <el-table-column
-      prop="server_name"
-      label="日期">
+      prop="name"
+      label="服务器">
     </el-table-column>
     <el-table-column
       prop="ip"
-      label="姓名">
+      label="IP">
     </el-table-column>
     <el-table-column
-      prop="address"
-      label="地址">
+      prop="port"
+      label="PORT">
+    </el-table-column>
+    <el-table-column
+      prop="user"
+      label="USER">
+    </el-table-column>
+    <el-table-column
+      label="操作"
+    >
+      <template slot-scope="scope">
+        <server-edit :server-id="scope.row.server_id"  @successEdit="getServerList"></server-edit>
+        <el-button circle type="danger" icon="el-icon-delete" size="mini" @click="confirmDel(scope.row.server_id)"></el-button>
+      </template>
     </el-table-column>
   </el-table>
 </div>
@@ -24,22 +36,64 @@
 
 <script>
 import addComputer from '@/components/AddComputer'
+import ServerEdit from '@/components/ServerEdit'
+import axios from 'axios'
+import qs from 'qs'
+
   export default {
     data() {
       return {
-        tableData: [{
-          server_name: '2016-05-02',
-          ip: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        }, {
-          server_name: '2016-05-04',
-          ip: '王小虎',
-          address: '上海市普陀区金沙江路 1517 弄'
-        }]
+        tableData: [],
       }
     },
     components: {
       addComputer,
+      ServerEdit
+    },
+    mounted: function() {
+      this.getServerList();
+    },
+    methods: {
+      getServerList: function() {
+        axios.get('/server/list')
+        .then(response => {
+          if (response.data.status == true) {
+            this.tableData = response.data.data || [];
+          }
+        });
+      },
+      successAdd: function(server) {
+        this.tableData.push(server)
+      },
+      confirmDel: function(server_id) {
+        this.$confirm('是否删除?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.serverdel(server_id);
+        });
+      },
+      serverdel: function(server_id) {
+        axios.get('/server/del', {
+          params: {
+            server_id: server_id,
+          }
+        })
+        .then(response => {
+          console.log(response)
+          if (response.data.status == false) {
+            this.$alert('删除失败', {type:"error"});
+          } else {
+            this.tableData = this.tableData.filter(function (server){
+              if (server.server_id != server_id) {
+                return server;
+              }
+            });
+            this.$alert('删除成功', {type:"success"});
+          }
+        })
+      },
     }
   }
 </script>
