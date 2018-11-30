@@ -26,7 +26,7 @@
     >
       <template slot-scope="scope">
         <server-edit :server-id="scope.row.server_id"  @successEdit="getServerList"></server-edit>
-        <el-button circle type="danger" icon="el-icon-delete" size="mini" @click="confirmDel(scope.row.server_id)"></el-button>
+        <el-button circle type="danger" icon="el-icon-delete" size="mini" @click="confirmDel(scope.row.server_id)" ></el-button>
       </template>
     </el-table-column>
   </el-table>
@@ -94,6 +94,7 @@ import qs from 'qs'
           }
         })
       },
+      
     }
   }
 </script>

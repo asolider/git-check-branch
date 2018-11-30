@@ -22,10 +22,11 @@ func main() {
 
 	projectGroup := r.Group("/project")
 	{
-		projectGroup.GET("/list", serverList)
-		// projectGroup.POST("/add", posting)
-		// projectGroup.POST("/edit", posting)
-		// projectGroup.GET("/del", posting)
+		projectGroup.GET("/list", projectList)
+		projectGroup.GET("/info", projectInfo)
+		projectGroup.GET("/del", projectDel)
+		projectGroup.POST("/add", projectAdd)
+		projectGroup.POST("/edit", projectEdit)
 	}
 
 	r.Run(":8080")
