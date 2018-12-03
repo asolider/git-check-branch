@@ -15,9 +15,11 @@ func main() {
 	{
 		serverGroup.GET("/list", serverList)
 		serverGroup.POST("/add", serverAdd)
+		serverGroup.POST("/edit", serverEdit)
 		serverGroup.GET("/del", serverDel)
 		serverGroup.GET("/info", serverInfo)
-		serverGroup.POST("/edit", serverEdit)
+		serverGroup.GET("/test", testLink)
+
 	}
 
 	projectGroup := r.Group("/project")

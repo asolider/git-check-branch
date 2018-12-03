@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"log"
 	"net/http"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 )
@@ -12,7 +13,7 @@ type serverItem struct {
 	ServerID int    `json:"server_id" form:"server_id"`
 	Name     string `json:"name" form:"server_name" binding:"required"`
 	IP       string `json:"ip" form:"server_ip" binding:"required"`
-	Port     string `json:"port" form:"server_port" binding:"required"`
+	Port     int    `json:"port" form:"server_port" binding:"required"`
 	User     string `json:"user" form:"server_user" binding:"required"`
 	Passwd   string `json:"passwd" form:"server_passwd" binding:"required"`
 }
@@ -125,4 +126,38 @@ func serverEdit(c *gin.Context) {
 
 	c.JSON(http.StatusOK, formatReturn(true, nil, "更新成功"))
 	return
+}
+
+func testLink(c *gin.Context) {
+	var serverID = c.Query("server_id")
+	if serverID == "" {
+		c.JSON(http.StatusOK, formatReturn(false, nil, "id 必传"))
+		return
+	}
+
+	var server serverItem
+	err := db.QueryRow("SELECT server_id, name, ip, port, user, passwd FROM server WHERE server_id =?", serverID).Scan(&server.ServerID, &server.Name, &server.IP, &server.Port, &server.User, &server.Passwd)
+
+	if err != nil {
+		if err == sql.ErrNoRows {
+			c.JSON(http.StatusOK, formatReturn(false, nil, "记录不存在"))
+			return
+		} else {
+			log.Printf("fail to query server e:%s id=%s", err, serverID)
+			c.JSON(http.StatusOK, formatReturn(false, err, ""))
+			return
+		}
+	}
+	res, err := runCmd(server, "whoami")
+	log.Printf("res; %s", res)
+	if err != nil {
+		c.JSON(http.StatusOK, formatReturn(false, err, ""))
+		return
+	}
+
+	if server.User == strings.TrimSpace(string(res)) {
+		c.JSON(http.StatusOK, formatReturn(true, string(res), "登录正常"))
+		return
+	}
+	c.JSON(http.StatusOK, formatReturn(false, string(res), "登录测试失败"))
 }

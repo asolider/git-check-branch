@@ -23,10 +23,12 @@
     </el-table-column>
     <el-table-column
       label="操作"
+      width="200"
     >
       <template slot-scope="scope">
         <server-edit :server-id="scope.row.server_id"  @successEdit="getServerList"></server-edit>
         <el-button circle type="danger" icon="el-icon-delete" size="mini" @click="confirmDel(scope.row.server_id)" ></el-button>
+        <el-button plain type="success" size="mini" @click="testLink(scope.row.server_id)" :disabled="scope.row.server_id == testServerId" :loading="scope.row.server_id == testServerId">测试</el-button>
       </template>
     </el-table-column>
   </el-table>
@@ -44,6 +46,7 @@ import qs from 'qs'
     data() {
       return {
         tableData: [],
+        testServerId: 0,
       }
     },
     components: {
@@ -93,6 +96,25 @@ import qs from 'qs'
             this.$message.success('删除成功');
           }
         })
+      },
+      testLink: function(server_id) {
+        if (this.testServerId != 0) {
+          return false;
+        }
+        this.testServerId = server_id;
+        axios.get('/server/test', {
+          params: {
+            server_id: server_id,
+          }
+        })
+        .then(response => {
+          this.testServerId = 0;
+          if (response.data.status == true) {
+            this.$message.success('登录正常');
+          } else {
+            this.$message.danger('登录失败');
+          }
+        });
       },
       
     }
