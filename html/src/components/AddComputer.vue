@@ -62,12 +62,12 @@ export default {
         this.loading=false;
         let data = response.data;
         if (data.status == false) {
-          this.$alert('添加失败', {type:"error"});
+          this.$message.error('添加失败');
         } else {
           let serverId = data.data.insert_id
           this.$emit('successAdd', {server_id: serverId, name: this.form.serverName, ip : this.form.serverIp, port: this.form.serverPort, user: this.form.loginUser});
           this.dialogFormVisible = false,
-          this.$alert('添加成功', {type:"success"});
+          this.$message.success('添加成功');
         }
       });
     },

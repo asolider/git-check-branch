@@ -83,14 +83,14 @@ import qs from 'qs'
         .then(response => {
           console.log(response)
           if (response.data.status == false) {
-            this.$alert('删除失败', {type:"error"});
+            this.$message.error('删除失败');
           } else {
             this.tableData = this.tableData.filter(function (server){
               if (server.server_id != server_id) {
                 return server;
               }
             });
-            this.$alert('删除成功', {type:"success"});
+            this.$message.success('删除成功');
           }
         })
       },
