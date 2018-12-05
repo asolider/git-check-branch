@@ -31,8 +31,6 @@
 <script>
 import ProjectAdd from '@/components/ProjectAdd'
 import ProjectEdit from '@/components/ProjectEdit'
-import axios from 'axios'
-import qs from 'qs'
 
   export default {
     data() {
@@ -49,10 +47,10 @@ import qs from 'qs'
     },
     methods: {
       getProjectList: function() {
-        axios.get('/project/list')
+        this.$http.get('/project/list')
         .then(response => {
-          if (response.data.status == true) {
-            this.tableData = response.data.data || [];
+          if (response.status == true) {
+            this.tableData = response.data || [];
           }
         });
       },
@@ -66,13 +64,13 @@ import qs from 'qs'
         });
       },
       projectdel: function(project_id) {
-        axios.get('/project/del', {
+        this.$http.get('/project/del', {
           params: {
             project_id: project_id,
           }
         })
         .then(response => {
-          if (response.data.status == false) {
+          if (response.status == false) {
             this.$message.error('删除失败');
           } else {
             this.getProjectList();

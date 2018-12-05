@@ -30,9 +30,7 @@
 </template>
 
 <script>
-import axios from 'axios'
-import qs from 'qs'
-axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
+
 export default {
   name: 'addComputer',
   data: function() {
@@ -52,19 +50,18 @@ export default {
   methods: {
     submitAddServer: function() {
       this.loading = true;
-      axios.post('/server/add', qs.stringify({server_name: this.form.serverName,
+      this.$http.post('/server/add', {server_name: this.form.serverName,
           server_ip : this.form.serverIp,
           server_port: this.form.serverPort,
           server_user: this.form.loginUser,
           server_passwd: this.form.loginPasswd,
-        })
+        }
       ).then(response => {
         this.loading=false;
-        let data = response.data;
-        if (data.status == false) {
+        if (response.status == false) {
           this.$message.error('添加失败');
         } else {
-          let serverId = data.data.insert_id
+          let serverId = response.data.insert_id
           this.$emit('successAdd', {server_id: serverId, name: this.form.serverName, ip : this.form.serverIp, port: this.form.serverPort, user: this.form.loginUser});
           this.dialogFormVisible = false,
           this.$message.success('添加成功');

@@ -30,9 +30,7 @@
 </template>
 
 <script>
-import axios from 'axios'
-import qs from 'qs'
-axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
+
 export default {
   name: 'ServerEdit',
   props: [
@@ -42,19 +40,19 @@ export default {
     return {
         loading: false,
         dialogFormVisible: false,
-        form: [],
+        form: {},
         formLabelWidth: '100px'
       };
   },
   methods: {
     getServerInfo: function() {
-        axios.get('server/info', {
+        this.$http.get('server/info', {
             params: {
                 server_id: this.serverId,
             }
         }).then(response => {
-            if (response.data.status == true) {
-                this.form = response.data.data
+            if (response.status == true) {
+                this.form = response.data
             } else {
                 this.$message.error("找不到该信息啊");
                 this.form = [];
@@ -63,19 +61,18 @@ export default {
     },
     submitEditServer: function() {
       this.loading = true;
-      axios.post('/server/edit', qs.stringify({
+      this.$http.post('/server/edit', {
           server_id: this.serverId,
           server_name: this.form.name,
           server_ip : this.form.ip,
           server_port: this.form.port,
           server_user: this.form.user,
           server_passwd: this.form.passwd,
-        })
+        }
       ).then(response => {
         this.loading=false;
-        let data = response.data;
-        if (data.status == false) {
-          this.$message.success('编辑失败：' + data.msg);
+        if (response.status == false) {
+          this.$message.success('编辑失败：' + response.msg);
         } else {
           this.$emit('successEdit');
           this.dialogFormVisible = false,

@@ -39,8 +39,6 @@
 <script>
 import addComputer from '@/components/AddComputer'
 import ServerEdit from '@/components/ServerEdit'
-import axios from 'axios'
-import qs from 'qs'
 
   export default {
     data() {
@@ -58,10 +56,10 @@ import qs from 'qs'
     },
     methods: {
       getServerList: function() {
-        axios.get('/server/list')
+        this.$http.get('/server/list')
         .then(response => {
-          if (response.data.status == true) {
-            this.tableData = response.data.data || [];
+          if (response.status == true) {
+            this.tableData = response.data || [];
           }
         });
       },
@@ -78,14 +76,13 @@ import qs from 'qs'
         });
       },
       serverdel: function(server_id) {
-        axios.get('/server/del', {
+        this.$http.get('/server/del', {
           params: {
             server_id: server_id,
           }
         })
         .then(response => {
-          console.log(response)
-          if (response.data.status == false) {
+            if (response.status == false) {
             this.$message.error('删除失败');
           } else {
             this.tableData = this.tableData.filter(function (server){
@@ -98,25 +95,29 @@ import qs from 'qs'
         })
       },
       testLink: function(server_id) {
+
         if (this.testServerId != 0) {
           return false;
         }
         this.testServerId = server_id;
-        axios.get('/server/test', {
+        this.$http.get('/server/test', {
           params: {
             server_id: server_id,
           }
         })
         .then(response => {
           this.testServerId = 0;
-          if (response.data.status == true) {
+          if (response.status == true) {
             this.$message.success('登录正常');
           } else {
-            this.$message.danger('登录失败');
+            this.$message.error('登录失败');
           }
+        })
+        .catch(error => {
+          this.$message.error('测试失败：'+error.toString());
         });
       },
-      
+
     }
   }
 </script>

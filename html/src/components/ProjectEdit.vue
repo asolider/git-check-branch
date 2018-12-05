@@ -26,8 +26,6 @@
 </template>
 
 <script>
-import axios from 'axios'
-import qs from 'qs'
 
 export default {
   name: 'addSubject',
@@ -53,21 +51,21 @@ export default {
   },
   methods: {
     getServerList: function() {
-      axios.get('/server/list')
+      this.$http.get('/server/list')
       .then(response => {
-        if (response.data.status == true) {
-          this.serverList = response.data.data || [];
+        if (response.status == true) {
+          this.serverList = response.data || [];
         }
       });
     },
     getProjectInfo: function (projectId) {
-      axios.get('/project/info', {
+      this.$http.get('/project/info', {
           params: {
               project_id: projectId,
           }
       }).then(response => {
-        if (response.data.status == true) {
-          this.form = response.data.data || [];
+        if (response.status == true) {
+          this.form = response.data || [];
         }
       });
     },
@@ -76,14 +74,14 @@ export default {
       this.form.name  = '';
       this.form.location  = '';
       this.serverList = this.getServerList();
-      this.getProjectInfo(this.projectId); 
+      this.getProjectInfo(this.projectId);
     },
     submitEditProject: function() {
       this.loading = true;
-      axios.post('/project/edit', qs.stringify(this.form)
+      this.$http.post('/project/edit', this.form
       ).then(response => {
         this.loading=false;
-        let data = response.data;
+        let data = response;
         if (data.status == false) {
           this.$message.error('编辑失败');
         } else {

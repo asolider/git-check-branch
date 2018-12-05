@@ -5,6 +5,9 @@ import App from './App'
 import router from './router'
 import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
+import util from './util'
+
+Vue.prototype.$http = util.http;
 
 Vue.config.productionTip = false
 
