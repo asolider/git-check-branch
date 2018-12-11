@@ -56,7 +56,7 @@ func branchCheck(c *gin.Context) {
 		c.JSON(http.StatusOK, formatReturn(false, nil, "信息异常"))
 		return
 	}
-	cmd := fmt.Sprintf("cd %s && git fetch ", projectInfo.Location)
+	cmd := fmt.Sprintf("cd %s && git fetch && git checkout %s ", projectInfo.Location, branchName)
 	resBytes, err := runCmd(serverInfo, cmd)
 	if err != nil {
 		log.Printf("切换分支出错：%s", err)

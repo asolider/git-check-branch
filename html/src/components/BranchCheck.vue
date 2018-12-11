@@ -36,7 +36,7 @@ export default {
       dialogVisible: false,
       branchList: [],
       selectbranch: "",
-      messages: ["12", "34"],
+      messages: [],
       checking: false
     };
   },
