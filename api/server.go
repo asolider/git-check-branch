@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"log"
 	"net/http"
+	"strconv"
 	"strings"
 
 	"github.com/gin-gonic/gin"
@@ -129,25 +130,19 @@ func serverEdit(c *gin.Context) {
 }
 
 func testLink(c *gin.Context) {
-	var serverID = c.Query("server_id")
-	if serverID == "" {
-		c.JSON(http.StatusOK, formatReturn(false, nil, "id 必传"))
+	var serverIDStr = c.Query("server_id")
+	if serverIDStr == "" {
+		c.JSON(http.StatusOK, formatReturn(false, nil, "server_id 必传"))
+		return
+	}
+	serverID, _ := strconv.Atoi(serverIDStr)
+
+	server := getServerInfoByServerID(int(serverID))
+	if server.IP == "" {
+		c.JSON(http.StatusOK, formatReturn(false, nil, "该服务器不存在"))
 		return
 	}
 
-	var server serverItem
-	err := db.QueryRow("SELECT server_id, name, ip, port, user, passwd FROM server WHERE server_id =?", serverID).Scan(&server.ServerID, &server.Name, &server.IP, &server.Port, &server.User, &server.Passwd)
-
-	if err != nil {
-		if err == sql.ErrNoRows {
-			c.JSON(http.StatusOK, formatReturn(false, nil, "记录不存在"))
-			return
-		} else {
-			log.Printf("fail to query server e:%s id=%s", err, serverID)
-			c.JSON(http.StatusOK, formatReturn(false, err, ""))
-			return
-		}
-	}
 	res, err := runCmd(server, "whoami")
 	log.Printf("res; %s", res)
 	if err != nil {
@@ -160,4 +155,17 @@ func testLink(c *gin.Context) {
 		return
 	}
 	c.JSON(http.StatusOK, formatReturn(false, string(res), "登录测试失败"))
+}
+
+func getServerInfoByServerID(serverID int) *serverItem {
+	server := new(serverItem)
+	if serverID <= 0 {
+		return server
+	}
+
+	err := db.QueryRow("SELECT server_id, name, ip, port, user, passwd FROM server WHERE server_id =?", serverID).Scan(&server.ServerID, &server.Name, &server.IP, &server.Port, &server.User, &server.Passwd)
+	if err != nil {
+		log.Printf("server get one sql error: %s", err)
+	}
+	return server
 }

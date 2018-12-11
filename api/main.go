@@ -10,7 +10,7 @@ func init() {
 
 func main() {
 	r := gin.Default()
-
+	// 服务器管理
 	serverGroup := r.Group("/server")
 	{
 		serverGroup.GET("/list", serverList)
@@ -22,14 +22,31 @@ func main() {
 
 	}
 
+	// 项目管理
+	projectController := new(projectController)
 	projectGroup := r.Group("/project")
 	{
-		projectGroup.GET("/list", projectList)
+		projectGroup.GET("/list", projectController.projectList)
 		projectGroup.GET("/info", projectInfo)
 		projectGroup.GET("/del", projectDel)
 		projectGroup.POST("/add", projectAdd)
 		projectGroup.POST("/edit", projectEdit)
 	}
+
+	// 分支管理
+	branchGroup := r.Group("/branch")
+	{
+
+		branchGroup.GET("/list/:projectId", branchList)
+		branchGroup.GET("/check/:projectId", branchCheck)
+		branchGroup.GET("/refresh", refreshBranch)
+	}
+
+	testController := new(testController)
+	r.GET("/test", testController.Test)
+
+	// socket
+	r.GET("/ping", ping)
 
 	r.Run(":8080")
 }

@@ -1,6 +1,6 @@
 <template>
-<div>
-  <el-button type="text" @click="dialogFormVisible = true">添加项目</el-button>
+<div style="display: inline-block">
+  <el-button plain type="primary" @click="dialogFormVisible = true" size="small">添加项目</el-button>
 
   <el-dialog title="添加项目" :visible.sync="dialogFormVisible" @open="modalOpen" v-loading="loading" >
     <el-form :model="form" :label-width="formLabelWidth">
