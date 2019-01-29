@@ -44,6 +44,7 @@ func main() {
 
 	testController := new(testController)
 	r.GET("/test", testController.Test)
+	r.POST("/test", testController.Test)
 
 	// socket
 	r.GET("/ping", ping)
