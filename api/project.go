@@ -50,42 +50,6 @@ func (ctl *projectController) projectList(c *gin.Context) {
 	return
 }
 
-func projectAdd(c *gin.Context) {
-	var project projectItem
-	if err := c.ShouldBind(&project); err != nil {
-		c.JSON(http.StatusOK, formatReturn(false, err, "参数都必须填写"))
-		return
-	}
-
-	res, err := db.Exec("INSERT INTO project (server_id, name, location) VALUES (?,?,?)", project.ServerID, project.Name, project.Location)
-	if err != nil {
-		log.Printf("add project fail, err", err)
-	}
-
-	lastID, err := res.LastInsertId()
-	if err != nil {
-		log.Printf("get add server_id fail, err:", err)
-	}
-	c.JSON(http.StatusOK, formatReturn(true, map[string]int64{"insert_id": lastID}, ""))
-	return
-}
-
-func projectDel(c *gin.Context) {
-	var projectID = c.Query("project_id")
-	if projectID == "" {
-		c.JSON(http.StatusOK, formatReturn(false, nil, "id 必传"))
-		return
-	}
-
-	_, err := db.Exec("DELETE FROM project WHERE project_id = ?", projectID)
-	if err != nil {
-		log.Printf("del project fail, err", err)
-	}
-
-	c.JSON(http.StatusOK, formatReturn(true, nil, "删除成功"))
-	return
-}
-
 func projectInfo(c *gin.Context) {
 	var projectID = c.Query("project_id")
 	if projectID == "" {
@@ -107,29 +71,6 @@ func projectInfo(c *gin.Context) {
 		}
 	}
 	c.JSON(http.StatusOK, formatReturn(true, project, ""))
-}
-
-func projectEdit(c *gin.Context) {
-	project := projectItem{}
-
-	if err := c.ShouldBind(&project); err != nil {
-		c.JSON(http.StatusOK, formatReturn(false, err, "参数都必须填写"))
-		return
-	}
-	if project.ProjectID == 0 {
-		c.JSON(http.StatusOK, formatReturn(false, nil, "id不能为空"))
-		return
-	}
-
-	_, err := db.Exec("UPDATE project SET server_id=?, name=?, location=? WHERE project_id=?", project.ServerID, project.Name, project.Location, project.ProjectID)
-	if err != nil {
-		log.Printf("update project fail, err %s; id=%d", err, project.ProjectID)
-		c.JSON(http.StatusOK, formatReturn(false, nil, "更新失败"))
-		return
-	}
-
-	c.JSON(http.StatusOK, formatReturn(true, nil, "更新成功"))
-	return
 }
 
 func getProjectInfoByProjectID(projectID int) *projectItem {

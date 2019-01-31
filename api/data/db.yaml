@@ -1,4 +1,4 @@
-maxid: 9
+maxid: 13
 server:
   9:
     serverid: 9
@@ -7,4 +7,10 @@ server:
     port: 22
     user: "6543"
     passwd: trds
-project: {}
+project:
+  13:
+    projectid: 13
+    serverid: 9
+    name: "1231"
+    location: "456"
+    curbranch: ""

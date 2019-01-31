@@ -23,15 +23,16 @@ func main() {
 	}
 
 	// // 项目管理
-	// projectController := new(projectController)
-	// projectGroup := r.Group("/project")
-	// {
-	// 	projectGroup.GET("/list", projectController.projectList)
-	// 	projectGroup.GET("/info", projectInfo)
-	// 	projectGroup.GET("/del", projectDel)
-	// 	projectGroup.POST("/add", projectAdd)
-	// 	projectGroup.POST("/edit", projectEdit)
-	// }
+
+	projectGroup := r.Group("/project")
+	{
+		projectController := new(controller.ProjectController)
+		projectGroup.GET("/list", projectController.List)
+		projectGroup.GET("/info", projectController.Info)
+		projectGroup.GET("/del", projectController.Del)
+		projectGroup.POST("/add", projectController.Add)
+		projectGroup.POST("/edit", projectController.Edit)
+	}
 
 	// // 分支管理
 	// branchGroup := r.Group("/branch")

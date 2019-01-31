@@ -30,7 +30,6 @@ func (ctl *ServerController) List(c *gin.Context) {
 func (ctl *ServerController) Add(c *gin.Context) {
 	var server model.ServerItem
 	if err := c.ShouldBind(&server); err != nil {
-		fmt.Printf("%#v", server)
 		ctl.Error(c, gin.H{}, "参数必填")
 		return
 	}
