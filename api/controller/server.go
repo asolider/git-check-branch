@@ -3,6 +3,7 @@ package controller
 import (
 	"fmt"
 	"git-check-branch/api/model"
+	"net/http"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
@@ -91,44 +92,9 @@ func (ctl *ServerController) Edit(c *gin.Context) {
 	return
 }
 
-// 测试连接状态
-// func (ctl *serverController) testLink(c *gin.Context) {
-// 	var serverIDStr = c.Query("server_id")
-// 	if serverIDStr == "" {
-// 		c.JSON(http.StatusOK, formatReturn(false, nil, "server_id 必传"))
-// 		return
-// 	}
-// 	serverID, _ := strconv.Atoi(serverIDStr)
+// TestLink 测试连接状态
+func (ctl *ServerController) TestLink(c *gin.Context) {
 
-// 	server := getServerInfoByServerID(int(serverID))
-// 	if server.IP == "" {
-// 		c.JSON(http.StatusOK, formatReturn(false, nil, "该服务器不存在"))
-// 		return
-// 	}
-
-// 	res, err := runCmd(server, "whoami")
-// 	log.Printf("res; %s", res)
-// 	if err != nil {
-// 		c.JSON(http.StatusOK, formatReturn(false, err, ""))
-// 		return
-// 	}
-
-// 	if server.User == strings.TrimSpace(string(res)) {
-// 		c.JSON(http.StatusOK, formatReturn(true, string(res), "登录正常"))
-// 		return
-// 	}
-// 	c.JSON(http.StatusOK, formatReturn(false, string(res), "登录测试失败"))
-// }
-
-// func getServerInfoByServerID(serverID int) *serverItem {
-// 	server := new(serverItem)
-// 	if serverID <= 0 {
-// 		return server
-// 	}
-
-// 	err := db.QueryRow("SELECT server_id, name, ip, port, user, passwd FROM server WHERE server_id =?", serverID).Scan(&server.ServerID, &server.Name, &server.IP, &server.Port, &server.User, &server.Passwd)
-// 	if err != nil {
-// 		log.Printf("server get one sql error: %s", err)
-// 	}
-// 	return server
-// }
+	c.JSON(http.StatusOK, gin.H{}, "登录正常")
+	return
+}
