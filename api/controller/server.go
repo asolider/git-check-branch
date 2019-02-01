@@ -3,7 +3,6 @@ package controller
 import (
 	"fmt"
 	"git-check-branch/api/model"
-	"net/http"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
@@ -95,6 +94,6 @@ func (ctl *ServerController) Edit(c *gin.Context) {
 // TestLink 测试连接状态
 func (ctl *ServerController) TestLink(c *gin.Context) {
 
-	c.JSON(http.StatusOK, gin.H{}, "登录正常")
+	ctl.Success(c, gin.H{}, "登录正常")
 	return
 }

@@ -35,13 +35,13 @@ func main() {
 	}
 
 	// // 分支管理
-	// branchGroup := r.Group("/branch")
-	// {
-
-	// 	branchGroup.GET("/list/:projectId", branchList)
-	// 	branchGroup.GET("/check/:projectId", branchCheck)
-	// 	branchGroup.GET("/refresh", refreshBranch)
-	// }
+	branchGroup := r.Group("/branch")
+	{
+		branchController := new(controller.BranchController)
+		branchGroup.GET("/list/:projectId", branchController.List)
+		//branchGroup.GET("/check/:projectId", branchCheck)
+		//branchGroup.GET("/refresh", refreshBranch)
+	}
 
 	r.Run(":8080")
 }
